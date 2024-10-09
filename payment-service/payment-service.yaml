@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-server-app
+  labels:
+    app: payment-server-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-server-app
+  template:
+    metadata:
+      labels:
+        app: payment-server-app
+    spec:
+      containers:
+        - name: payment-server-app
+          image: anojpeiris/payment-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3005
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-server-svc
+spec:
+  selector:
+    app: payment-server-app
+  type: NodePort
+  ports:
+    - port: 3005
+      targetPort: 3005
+      nodePort: 30005 # Specify your desired NodePort here
+      protocol: TCP
